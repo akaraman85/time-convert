@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Head from 'next/head'
 import { format, fromUnixTime } from 'date-fns'
 import { zonedTimeToUtc, utcToZonedTime, format as formatTz } from 'date-fns-tz'
 import ConversionHistoryComponent, {
@@ -39,6 +40,13 @@ interface ConversionResult {
   formatted: string
   iso: string
   relative: string
+}
+
+// Generate sitemap and robots.txt at build time
+export async function getStaticProps() {
+  return {
+    props: {},
+  }
 }
 
 export default function Home() {
@@ -226,106 +234,166 @@ export default function Home() {
     setTimestamp(now.toString())
   }
 
+  const pageTitle =
+    'Unix Timestamp Converter | Convert Timestamps to Readable Dates'
+  const pageDescription =
+    'Free online tool to convert Unix timestamps to human-readable dates and times. Supports multiple timezones and provides instant results.'
+  const canonicalUrl = 'https://yourdomain.com'
+
   return (
-    <div className='container'>
-      <div className='card'>
-        <h1 className='title'>Unix Timestamp Converter</h1>
-        <p className='subtitle'>
-          Convert Unix timestamps (epoch time) to human-readable dates in any
-          timezone
-        </p>
+    <>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name='description' content={pageDescription} />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <link rel='canonical' href={canonicalUrl} />
 
-        <div className='input-group'>
-          <label className='label' htmlFor='timestamp'>
-            Unix Timestamp (seconds or milliseconds)
-          </label>
-          <input
-            id='timestamp'
-            type='text'
-            className='input'
-            value={timestamp}
-            onChange={e => setTimestamp(e.target.value)}
-            placeholder='e.g., 1691798642 or 1691798642000'
-            onKeyPress={e => e.key === 'Enter' && convertTimestamp()}
-          />
-          <button
-            type='button'
-            onClick={fillCurrentTimestamp}
-            style={{
-              marginTop: '0.5rem',
-              padding: '0.5rem 1rem',
-              background: 'transparent',
-              border: '1px solid #667eea',
-              borderRadius: '5px',
-              color: '#667eea',
-              cursor: 'pointer',
-              fontSize: '0.9rem',
-            }}
-          >
-            Use Current Time
-          </button>
-        </div>
+        {/* Open Graph / Facebook */}
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={canonicalUrl} />
+        <meta property='og:title' content={pageTitle} />
+        <meta property='og:description' content={pageDescription} />
+        <meta property='og:site_name' content='Unix Timestamp Converter' />
 
-        <div className='input-group'>
-          <label className='label' htmlFor='timezone'>
-            Target Timezone
-          </label>
-          <select
-            id='timezone'
-            className='select'
-            value={selectedTimezone}
-            onChange={e => setSelectedTimezone(e.target.value)}
-          >
-            {COMMON_TIMEZONES.map(tz => (
-              <option key={tz} value={tz}>
-                {tz}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Twitter */}
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta name='twitter:title' content={pageTitle} />
+        <meta name='twitter:description' content={pageDescription} />
 
-        <button className='button' onClick={convertTimestamp}>
-          Convert Timestamp
-        </button>
-
-        {error && (
-          <div className='results'>
-            <div className='result-item error'>
-              <div className='result-label'>Error</div>
-              <div className='result-value'>{error}</div>
-            </div>
-          </div>
-        )}
-
-        {results.length > 0 && (
-          <div className='results'>
-            {results.map((result, index) => (
-              <div key={index} className='result-item'>
-                <div className='result-label'>{result.timezone}</div>
-                <div className='result-value'>{result.formatted}</div>
-                <div
-                  className='result-value'
-                  style={{
-                    fontSize: '0.85rem',
-                    opacity: 0.7,
-                    marginTop: '0.25rem',
-                  }}
-                >
-                  {result.relative} • ISO: {result.iso}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className='current-time'>{currentTime}</div>
-
-        <ConversionHistoryComponent
-          history={conversionHistory}
-          onClearHistory={clearHistory}
-          onSelectTimestamp={setTimestamp}
+        {/* Structured Data */}
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebApplication',
+              name: 'Unix Timestamp Converter',
+              description: pageDescription,
+              applicationCategory: 'Utility',
+              operatingSystem: 'Web',
+              offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'USD',
+              },
+            }),
+          }}
         />
-      </div>
-    </div>
+      </Head>
+
+      <main className='container'>
+        <div className='card'>
+          <header>
+            <h1 className='title'>Unix Timestamp Converter</h1>
+            <p className='subtitle'>
+              Convert Unix timestamps (epoch time) to human-readable dates in
+              any timezone
+            </p>
+          </header>
+
+          <section
+            aria-label='Timestamp Conversion Form'
+            className='input-group'
+          >
+            <div className='form-group'>
+              <label className='label' htmlFor='timestamp'>
+                Unix Timestamp (seconds or milliseconds)
+              </label>
+              <input
+                id='timestamp'
+                type='text'
+                className='input'
+                value={timestamp}
+                onChange={e => setTimestamp(e.target.value)}
+                placeholder='e.g., 1691798642 or 1691798642000'
+                onKeyPress={e => e.key === 'Enter' && convertTimestamp()}
+              />
+              <button
+                type='button'
+                onClick={fillCurrentTimestamp}
+                style={{
+                  marginTop: '0.5rem',
+                  padding: '0.5rem 1rem',
+                  background: 'transparent',
+                  border: '1px solid #667eea',
+                  borderRadius: '5px',
+                  color: '#667eea',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                }}
+              >
+                Use Current Time
+              </button>
+            </div>
+          </section>
+
+          <section aria-label='Timezone Selection' className='input-group'>
+            <div className='form-group'>
+              <label className='label' htmlFor='timezone'>
+                Target Timezone
+              </label>
+              <select
+                id='timezone'
+                className='select'
+                value={selectedTimezone}
+                onChange={e => setSelectedTimezone(e.target.value)}
+              >
+                {COMMON_TIMEZONES.map(tz => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </section>
+
+          <section aria-label='Actions' className='actions'>
+            <button className='button' onClick={convertTimestamp}>
+              Convert Timestamp
+            </button>
+          </section>
+
+          {error && (
+            <div className='results'>
+              <div className='result-item error'>
+                <div className='result-label'>Error</div>
+                <div className='result-value'>{error}</div>
+              </div>
+            </div>
+          )}
+
+          {results.length > 0 && (
+            <div className='results'>
+              {results.map((result, index) => (
+                <div key={index} className='result-item'>
+                  <div className='result-label'>{result.timezone}</div>
+                  <div className='result-value'>{result.formatted}</div>
+                  <div
+                    className='result-value'
+                    style={{
+                      fontSize: '0.85rem',
+                      opacity: 0.7,
+                      marginTop: '0.25rem',
+                    }}
+                  >
+                    {result.relative} • ISO: {result.iso}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <footer className='current-time'>{currentTime}</footer>
+
+          <section aria-label='Conversion History'>
+            <ConversionHistoryComponent
+              history={conversionHistory}
+              onClearHistory={clearHistory}
+              onSelectTimestamp={setTimestamp}
+            />
+          </section>
+        </div>
+      </main>
+    </>
   )
 }
