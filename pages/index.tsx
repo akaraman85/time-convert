@@ -1,39 +1,11 @@
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { format, fromUnixTime } from 'date-fns'
 import { zonedTimeToUtc, utcToZonedTime, format as formatTz } from 'date-fns-tz'
 import ConversionHistoryComponent, {
   ConversionHistory,
 } from '../components/ConversionHistory'
-
-// Common timezones for the dropdown
-const COMMON_TIMEZONES = [
-  'UTC',
-  'America/New_York',
-  'America/Chicago',
-  'America/Denver',
-  'America/Los_Angeles',
-  'America/Toronto',
-  'America/Vancouver',
-  'Europe/London',
-  'Europe/Paris',
-  'Europe/Berlin',
-  'Europe/Rome',
-  'Europe/Madrid',
-  'Asia/Tokyo',
-  'Asia/Shanghai',
-  'Asia/Hong_Kong',
-  'Asia/Singapore',
-  'Asia/Seoul',
-  'Asia/Mumbai',
-  'Asia/Dubai',
-  'Australia/Sydney',
-  'Australia/Melbourne',
-  'Pacific/Auckland',
-  'Africa/Cairo',
-  'America/Sao_Paulo',
-  'America/Mexico_City',
-]
 
 interface ConversionResult {
   timezone: string
@@ -47,6 +19,25 @@ export async function getStaticProps() {
   return {
     props: {},
   }
+}
+
+const TimezoneSelect = dynamic<TimezoneSelectProps>(
+  () => import('../components/timezoneSelect').then(mod => mod.default),
+  {
+    ssr: false,
+    loading: () => (
+      <select className='select select-bordered w-full'>
+        <option>Loading timezones...</option>
+      </select>
+    ),
+  }
+)
+
+interface TimezoneSelectProps {
+  id?: string
+  value: string
+  onChange: (value: string) => void
+  className?: string
 }
 
 export default function Home() {
@@ -327,23 +318,18 @@ export default function Home() {
             </div>
           </section>
 
-          <section aria-label='Timezone Selection' className='input-group'>
+          <section aria-label='Timezone Selection'>
             <div className='form-group'>
               <label className='label' htmlFor='timezone'>
-                Target Timezone
+                <span className='label-text'>Target Timezone</span>
               </label>
-              <select
-                id='timezone'
-                className='select'
-                value={selectedTimezone}
-                onChange={e => setSelectedTimezone(e.target.value)}
-              >
-                {COMMON_TIMEZONES.map(tz => (
-                  <option key={tz} value={tz}>
-                    {tz}
-                  </option>
-                ))}
-              </select>
+              <div className='mt-1'>
+                <TimezoneSelect
+                  id='timezone'
+                  value={selectedTimezone}
+                  onChange={setSelectedTimezone}
+                />
+              </div>
             </div>
           </section>
 
