@@ -38,6 +38,15 @@ interface ConversionResult {
   relative: string
 }
 
+interface ConversionHistory {
+  id: string
+  timestamp: string
+  originalTimestamp: string
+  convertedDate: string
+  timezone: string
+  createdAt: string
+}
+
 export default function Home() {
   const [timestamp, setTimestamp] = useState('')
   const [selectedTimezone, setSelectedTimezone] = useState('UTC')
@@ -45,6 +54,8 @@ export default function Home() {
   const [error, setError] = useState('')
   const [currentTime, setCurrentTime] = useState('')
   const [userTimezone, setUserTimezone] = useState('')
+  const [conversionHistory, setConversionHistory] = useState<ConversionHistory[]>([])
+  const [showHistory, setShowHistory] = useState(false)
 
   // Get user's local timezone and current time
   useEffect(() => {
@@ -61,8 +72,47 @@ export default function Home() {
     updateCurrentTime()
     const interval = setInterval(updateCurrentTime, 1000)
     
+    // Load conversion history from localStorage
+    loadConversionHistory()
+    
     return () => clearInterval(interval)
   }, [])
+
+  const loadConversionHistory = () => {
+    try {
+      const stored = localStorage.getItem('timestamp-conversion-history')
+      if (stored) {
+        const history = JSON.parse(stored)
+        setConversionHistory(history)
+      }
+    } catch (error) {
+      console.error('Error loading conversion history:', error)
+    }
+  }
+
+  const saveToHistory = (originalTimestamp: string, convertedDate: string, timezone: string) => {
+    const historyItem: ConversionHistory = {
+      id: Date.now().toString(),
+      timestamp: originalTimestamp,
+      originalTimestamp,
+      convertedDate,
+      timezone,
+      createdAt: new Date().toISOString()
+    }
+    
+    try {
+      const updatedHistory = [historyItem, ...conversionHistory].slice(0, 50) // Keep last 50 conversions
+      setConversionHistory(updatedHistory)
+      localStorage.setItem('timestamp-conversion-history', JSON.stringify(updatedHistory))
+    } catch (error) {
+      console.error('Error saving to history:', error)
+    }
+  }
+
+  const clearHistory = () => {
+    setConversionHistory([])
+    localStorage.removeItem('timestamp-conversion-history')
+  }
 
   const convertTimestamp = () => {
     setError('')
@@ -129,6 +179,11 @@ export default function Home() {
       }
       
       setResults(newResults)
+      
+      // Save to history - use the primary result (local timezone or selected timezone)
+      const primaryResult = newResults[0]
+      saveToHistory(timestamp.trim(), primaryResult.formatted, primaryResult.timezone)
+      
     } catch (err) {
       setError('Error converting timestamp. Please check the value and try again.')
     }
@@ -244,6 +299,88 @@ export default function Home() {
         
         <div className="current-time">
           {currentTime}
+        </div>
+        
+        {/* History Section */}
+        <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ margin: 0, color: '#4a5568', fontSize: '1.1rem' }}>Conversion History</h3>
+            <div>
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: 'transparent',
+                  border: '1px solid #667eea',
+                  borderRadius: '5px',
+                  color: '#667eea',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  marginRight: '0.5rem'
+                }}
+              >
+                {showHistory ? 'Hide' : 'Show'} History ({conversionHistory.length})
+              </button>
+              {conversionHistory.length > 0 && (
+                <button
+                  onClick={clearHistory}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: 'transparent',
+                    border: '1px solid #e53e3e',
+                    borderRadius: '5px',
+                    color: '#e53e3e',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {showHistory && (
+            <div>
+              {conversionHistory.length === 0 ? (
+                <p style={{ color: '#718096', fontStyle: 'italic' }}>No conversions yet</p>
+              ) : (
+                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                  {conversionHistory.map((item) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        padding: '0.75rem',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        marginBottom: '0.5rem',
+                        background: '#f7fafc',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => setTimestamp(item.originalTimestamp)}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 'bold', color: '#2d3748', marginBottom: '0.25rem' }}>
+                            {item.originalTimestamp}
+                          </div>
+                          <div style={{ color: '#4a5568', fontSize: '0.9rem', marginBottom: '0.25rem' }}>
+                            {item.convertedDate}
+                          </div>
+                          <div style={{ color: '#718096', fontSize: '0.8rem' }}>
+                            {item.timezone}
+                          </div>
+                        </div>
+                        <div style={{ color: '#a0aec0', fontSize: '0.75rem', textAlign: 'right' }}>
+                          {format(new Date(item.createdAt), 'MMM d, HH:mm')}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
