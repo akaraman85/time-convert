@@ -286,10 +286,10 @@ export default function Home() {
             aria-label='Timestamp Conversion Form'
             className='input-group'
           >
-            <div className='form-group'>
-              <label className='label' htmlFor='timestamp'>
-                Unix Timestamp (seconds or milliseconds)
-              </label>
+            <label className='label' htmlFor='timestamp'>
+              Unix Timestamp (seconds or milliseconds)
+            </label>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
               <input
                 id='timestamp'
                 type='text'
@@ -303,7 +303,6 @@ export default function Home() {
                 type='button'
                 onClick={fillCurrentTimestamp}
                 style={{
-                  marginTop: '0.5rem',
                   padding: '0.5rem 1rem',
                   background: 'transparent',
                   border: '1px solid #667eea',
@@ -311,6 +310,7 @@ export default function Home() {
                   color: '#667eea',
                   cursor: 'pointer',
                   fontSize: '0.9rem',
+                  width: '100%',
                 }}
               >
                 Use Current Time
@@ -318,19 +318,15 @@ export default function Home() {
             </div>
           </section>
 
-          <section aria-label='Timezone Selection'>
-            <div className='form-group'>
-              <label className='label' htmlFor='timezone'>
-                <span className='label-text'>Target Timezone</span>
-              </label>
-              <div className='mt-1'>
-                <TimezoneSelect
-                  id='timezone'
-                  value={selectedTimezone}
-                  onChange={setSelectedTimezone}
-                />
-              </div>
-            </div>
+          <section
+            aria-label='Timezone Selection'
+            style={{ marginBottom: '1rem' }}
+          >
+            <TimezoneSelect
+              id='timezone'
+              value={selectedTimezone}
+              onChange={setSelectedTimezone}
+            />
           </section>
 
           <section aria-label='Actions' className='actions'>
@@ -338,7 +334,6 @@ export default function Home() {
               Convert Timestamp
             </button>
           </section>
-
           {error && (
             <div className='results'>
               <div className='result-item error'>
@@ -370,7 +365,8 @@ export default function Home() {
           )}
 
           <footer className='current-time'>{currentTime}</footer>
-
+        </div>
+        <div className='card conversion-history'>
           <section aria-label='Conversion History'>
             <ConversionHistoryComponent
               history={conversionHistory}

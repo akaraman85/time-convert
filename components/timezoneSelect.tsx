@@ -78,7 +78,7 @@ export default function TimezoneSelect({
   }
 
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
       <div>
         <label htmlFor={`${id}-region`} className='label'>
           <span className='label-text'>Region</span>
