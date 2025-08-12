@@ -16,17 +16,32 @@ interface ConversionHistoryProps {
   onSelectTimestamp: (timestamp: string) => void
 }
 
-export default function ConversionHistoryComponent({ 
-  history, 
-  onClearHistory, 
-  onSelectTimestamp 
+export default function ConversionHistoryComponent({
+  history,
+  onClearHistory,
+  onSelectTimestamp,
 }: ConversionHistoryProps) {
   const [showHistory, setShowHistory] = useState(false)
 
   return (
-    <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h3 style={{ margin: 0, color: '#4a5568', fontSize: '1.1rem' }}>Conversion History</h3>
+    <div
+      style={{
+        marginTop: '2rem',
+        borderTop: '1px solid #e2e8f0',
+        paddingTop: '1.5rem',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '1rem',
+        }}
+      >
+        <h3 style={{ margin: 0, color: '#4a5568', fontSize: '1.1rem' }}>
+          Conversion History
+        </h3>
         <div>
           <button
             onClick={() => setShowHistory(!showHistory)}
@@ -38,7 +53,7 @@ export default function ConversionHistoryComponent({
               color: '#667eea',
               cursor: 'pointer',
               fontSize: '0.9rem',
-              marginRight: '0.5rem'
+              marginRight: '0.5rem',
             }}
           >
             {showHistory ? 'Hide' : 'Show'} History ({history.length})
@@ -53,7 +68,7 @@ export default function ConversionHistoryComponent({
                 borderRadius: '5px',
                 color: '#e53e3e',
                 cursor: 'pointer',
-                fontSize: '0.9rem'
+                fontSize: '0.9rem',
               }}
             >
               Clear
@@ -61,14 +76,16 @@ export default function ConversionHistoryComponent({
           )}
         </div>
       </div>
-      
+
       {showHistory && (
         <div>
           {history.length === 0 ? (
-            <p style={{ color: '#718096', fontStyle: 'italic' }}>No conversions yet</p>
+            <p style={{ color: '#718096', fontStyle: 'italic' }}>
+              No conversions yet
+            </p>
           ) : (
             <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-              {history.map((item) => (
+              {history.map(item => (
                 <div
                   key={item.id}
                   style={{
@@ -77,23 +94,47 @@ export default function ConversionHistoryComponent({
                     borderRadius: '8px',
                     marginBottom: '0.5rem',
                     background: '#f7fafc',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                   onClick={() => onSelectTimestamp(item.originalTimestamp)}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 'bold', color: '#2d3748', marginBottom: '0.25rem' }}>
+                      <div
+                        style={{
+                          fontWeight: 'bold',
+                          color: '#2d3748',
+                          marginBottom: '0.25rem',
+                        }}
+                      >
                         {item.originalTimestamp}
                       </div>
-                      <div style={{ color: '#4a5568', fontSize: '0.9rem', marginBottom: '0.25rem' }}>
+                      <div
+                        style={{
+                          color: '#4a5568',
+                          fontSize: '0.9rem',
+                          marginBottom: '0.25rem',
+                        }}
+                      >
                         {item.convertedDate}
                       </div>
                       <div style={{ color: '#718096', fontSize: '0.8rem' }}>
                         {item.timezone}
                       </div>
                     </div>
-                    <div style={{ color: '#a0aec0', fontSize: '0.75rem', textAlign: 'right' }}>
+                    <div
+                      style={{
+                        color: '#a0aec0',
+                        fontSize: '0.75rem',
+                        textAlign: 'right',
+                      }}
+                    >
                       {format(new Date(item.createdAt), 'MMM d, HH:mm')}
                     </div>
                   </div>
