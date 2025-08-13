@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { format, fromUnixTime } from 'date-fns'
-import { zonedTimeToUtc, utcToZonedTime, format as formatTz } from 'date-fns-tz'
+import { utcToZonedTime, format as formatTz } from 'date-fns-tz'
+import styled from '@emotion/styled'
 import ConversionHistoryComponent, {
   ConversionHistory,
 } from '../components/ConversionHistory'
@@ -40,12 +41,23 @@ interface TimezoneSelectProps {
   className?: string
 }
 
+const CurrentTimeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+`
+
 export default function Home() {
   const [timestamp, setTimestamp] = useState('')
   const [selectedTimezone, setSelectedTimezone] = useState('UTC')
   const [results, setResults] = useState<ConversionResult[]>([])
   const [error, setError] = useState('')
-  const [currentTime, setCurrentTime] = useState('')
+  const [currentTime, setCurrentTime] = useState(0)
   const [userTimezone, setUserTimezone] = useState('')
   const [conversionHistory, setConversionHistory] = useState<
     ConversionHistory[]
@@ -60,9 +72,7 @@ export default function Home() {
     const updateCurrentTime = () => {
       const now = new Date()
       const unixTimestamp = Math.floor(now.getTime() / 1000)
-      setCurrentTime(
-        `Current timestamp: ${unixTimestamp} (${format(now, 'PPpp')})`
-      )
+      setCurrentTime(unixTimestamp)
     }
 
     updateCurrentTime()
@@ -228,7 +238,7 @@ export default function Home() {
   const pageTitle = 'Timestamp Converter | Convert Timestamps to Readable Dates'
   const pageDescription =
     'Free online tool to convert timestamps to human-readable dates and times. Supports multiple timezones and provides instant results.'
-  const canonicalUrl = 'https://yourdomain.com'
+  const canonicalUrl = 'https://timestamp-converter.com'
 
   return (
     <>
@@ -288,20 +298,17 @@ export default function Home() {
             <label className='label' htmlFor='timestamp'>
               Timestamp (seconds or milliseconds)
             </label>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
-              <input
-                id='timestamp'
-                type='text'
-                className='input'
-                value={timestamp}
-                onChange={e => setTimestamp(e.target.value)}
-                placeholder='e.g., 1691798642 or 1691798642000'
-                onKeyPress={e => e.key === 'Enter' && convertTimestamp()}
-              />
+            <CurrentTimeContainer>
+              <div className='current-time' style={{ flex: 1 }}>
+                <div>{`Current timestamp: ${currentTime}`}</div>
+                <div>{`${format(new Date(currentTime * 1000), 'PPpp')}`}</div>
+              </div>
               <button
                 type='button'
                 onClick={fillCurrentTimestamp}
                 style={{
+                  flex: 0.25,
+                  margin: '1rem 0',
                   padding: '0.5rem 1rem',
                   background: 'transparent',
                   border: '1px solid #667eea',
@@ -312,8 +319,19 @@ export default function Home() {
                   width: '100%',
                 }}
               >
-                Use Current Time
+                Use
               </button>
+            </CurrentTimeContainer>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
+              <input
+                id='timestamp'
+                type='text'
+                className='input'
+                value={timestamp}
+                onChange={e => setTimestamp(e.target.value)}
+                placeholder='e.g., 1691798642 or 1691798642000'
+                onKeyPress={e => e.key === 'Enter' && convertTimestamp()}
+              />
             </div>
           </section>
 
@@ -362,8 +380,6 @@ export default function Home() {
               ))}
             </div>
           )}
-
-          <footer className='current-time'>{currentTime}</footer>
         </div>
         <div className='card conversion-history'>
           <section aria-label='Conversion History'>

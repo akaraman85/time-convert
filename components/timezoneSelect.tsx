@@ -1,14 +1,50 @@
-import { useState, useEffect, useMemo } from 'react'
-import TIMEZONES from '../utils/timezones'
+import { useState, useEffect } from 'react'
+import type { TimezoneSelectProps as PropsType } from '../types'
+import styled from '@emotion/styled'
 
-interface TimezoneSelectProps {
-  value: string
-  onChange: (value: string) => void
-  id?: string
-  className?: string
-}
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
-type TimezoneGroup = {
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+`
+
+const StyledSelect = styled.select`
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background-color: white;
+  color: #1a202c;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  }
+
+  &:disabled {
+    background-color: #f7fafc;
+    cursor: not-allowed;
+  }
+`
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+`
+
+interface TimezoneGroup {
   region: string
   timezones: string[]
 }
@@ -19,116 +55,118 @@ export default function TimezoneSelect({
   id = 'timezone',
   className = '',
   ...props
-}: TimezoneSelectProps) {
+}: PropsType) {
   const [isClient, setIsClient] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState('')
+  const [timezoneGroups, setTimezoneGroups] = useState<TimezoneGroup[]>([])
 
-  // Group timezones by region
-  const timezoneGroups = useMemo(() => {
-    const groups: Record<string, string[]> = {}
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsClient(true)
 
-    TIMEZONES.forEach(tz => {
-      const [region] = tz.split('/')
-      if (!groups[region]) {
-        groups[region] = []
-      }
-      groups[region].push(tz)
-    })
+      // Using type assertion for Intl.supportedValuesOf
+      const timezones = (Intl as any).supportedValuesOf('timeZone') as string[]
 
-    // Convert to array and sort regions
-    return Object.entries(groups)
-      .map(([region, timezones]) => ({
-        region,
-        timezones: timezones.sort(),
-      }))
-      .sort((a, b) => a.region.localeCompare(b.region))
+      const groups: Record<string, string[]> = {}
+
+      timezones.forEach(tz => {
+        const [region] = tz.split('/')
+        if (region) {
+          if (!groups[region]) {
+            groups[region] = []
+          }
+          groups[region].push(tz)
+        }
+      })
+
+      const sortedGroups = Object.entries(groups)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([region, timezones]) => ({
+          region,
+          timezones: timezones.sort(),
+        }))
+
+      setTimezoneGroups(sortedGroups)
+    }
   }, [])
 
-  // Set default region based on current value
   useEffect(() => {
     if (value) {
       const [region] = value.split('/')
-      setSelectedRegion(region)
-    } else if (timezoneGroups.length > 0) {
-      setSelectedRegion(timezoneGroups[0].region)
+      if (region) {
+        setSelectedRegion(region)
+      }
     }
-  }, [value, timezoneGroups])
-
-  // Get filtered timezones based on selected region
-  const filteredTimezones = useMemo(() => {
-    const group = timezoneGroups.find(g => g.region === selectedRegion)
-    return group ? group.timezones : []
-  }, [selectedRegion, timezoneGroups])
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
+  }, [value])
 
   if (!isClient) {
     return (
-      <div className={`space-y-2 ${className}`}>
-        <select className='select select-bordered w-full' disabled>
+      <div className={className}>
+        <StyledSelect disabled>
           <option>Loading regions...</option>
-        </select>
-        <select className='select select-bordered w-full' disabled>
+        </StyledSelect>
+        <StyledSelect disabled>
           <option>Loading timezones...</option>
-        </select>
+        </StyledSelect>
       </div>
     )
   }
 
+  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRegion = e.target.value
+    setSelectedRegion(newRegion)
+    // Select first timezone in the new region
+    const firstTz = timezoneGroups.find(
+      (g: TimezoneGroup) => g.region === newRegion
+    )?.timezones[0]
+    if (firstTz) {
+      onChange(firstTz)
+    }
+  }
+
+  const handleTimezoneChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange(e.target.value)
+  }
+
+  const currentTimezones = selectedRegion
+    ? timezoneGroups.find((g: TimezoneGroup) => g.region === selectedRegion)
+        ?.timezones || []
+    : []
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
+    <Container className={className}>
       <div>
-        <label htmlFor={`${id}-region`} className='label'>
-          <span className='label-text'>Region</span>
-        </label>
-        <select
+        <Label htmlFor={`${id}-region`}>Region</Label>
+        <StyledSelect
           id={`${id}-region`}
-          className='select select-bordered w-full'
           value={selectedRegion}
-          onChange={e => {
-            const newRegion = e.target.value
-            setSelectedRegion(newRegion)
-            // Select first timezone in the new region
-            const firstTz = timezoneGroups.find(g => g.region === newRegion)
-              ?.timezones[0]
-            if (firstTz) {
-              onChange(firstTz)
-            }
-          }}
+          onChange={handleRegionChange}
         >
+          <option value=''>Select a region</option>
           {timezoneGroups.map(({ region }) => (
             <option key={region} value={region}>
               {region}
             </option>
           ))}
-        </select>
+        </StyledSelect>
       </div>
-
       <div>
-        <label htmlFor={id} className='label'>
-          <span className='label-text'>Timezone</span>
-        </label>
-        <select
+        <Label htmlFor={id}>Timezone</Label>
+        <StyledSelect
           id={id}
-          className='select select-bordered w-full'
           value={value}
-          onChange={e => onChange(e.target.value)}
+          onChange={handleTimezoneChange}
+          disabled={!selectedRegion}
           {...props}
         >
-          {filteredTimezones.map(tz => {
-            const tzName = tz.includes('/')
-              ? tz.split('/').slice(1).join(' / ')
-              : tz
-            return (
-              <option key={tz} value={tz}>
-                {tzName}
-              </option>
-            )
-          })}
-        </select>
+          <option value=''>Select a timezone</option>
+          {currentTimezones.map(timezone => (
+            <option key={timezone} value={timezone}>
+              {timezone}
+            </option>
+          ))}
+        </StyledSelect>
       </div>
-    </div>
+    </Container>
   )
 }

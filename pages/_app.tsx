@@ -1,12 +1,30 @@
 import type { AppProps } from 'next/app'
 import { Analytics } from '@vercel/analytics/react'
-import '../styles/globals.css'
+import { CacheProvider, EmotionCache } from '@emotion/react'
+import createEmotionCache from '../utils/createEmotionCache'
+import { ThemeProvider } from '@emotion/react'
+import { theme } from '../styles/theme'
+import GlobalStyles from '../styles/GlobalStyles'
 
-export default function App({ Component, pageProps }: AppProps) {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache
+}
+
+export default function App({
+  Component,
+  pageProps,
+  emotionCache = clientSideEmotionCache,
+}: MyAppProps) {
   return (
-    <>
-      <Component {...pageProps} />
-      <Analytics />
-    </>
+    <CacheProvider value={emotionCache}>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <Component {...pageProps} />
+        <Analytics />
+      </ThemeProvider>
+    </CacheProvider>
   )
 }
