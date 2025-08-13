@@ -1,7 +1,7 @@
 {
   "name": "time-convert",
   "version": "1.0.0",
-  "description": "A website to convert Unix timestamps to any timezone",
+  "description": "A website to convert timestamps to any timezone",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

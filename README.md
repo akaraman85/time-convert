@@ -1,13 +1,13 @@
-# Unix Timestamp Converter
+# Timestamp Converter
 
-A modern web application built with Next.js that converts Unix timestamps (epoch time) to human-readable dates in any timezone around the world.
+A web application built with Next.js that converts timestamps (epoch time) to human-readable dates in any timezone around the world.
 
 ## Features
 
-- **Unix Timestamp Conversion**: Convert both seconds and milliseconds timestamps
+- **Timestamp Conversion**: Convert both seconds and milliseconds timestamps
 - **Local Timezone Detection**: Automatically detects and displays your local timezone
 - **Global Timezone Support**: Convert to any timezone worldwide
-- **Real-time Current Time**: Shows current Unix timestamp updating every second
+- **Real-time Current Time**: Shows current timestamp updating every second
 - **Relative Time Display**: Shows how long ago or in the future the timestamp is
 - **Modern UI**: Beautiful, responsive design with gradient backgrounds
 - **ISO Format Support**: Displays timestamps in ISO 8601 format
@@ -56,7 +56,7 @@ This project is optimized for deployment on Vercel:
 
 ## Usage
 
-1. Enter a Unix timestamp (in seconds or milliseconds)
+1. Enter a timestamp (in seconds or milliseconds)
 2. Select a target timezone from the dropdown
 3. Click "Convert Timestamp" to see the results
 4. View the converted time in your local timezone, selected timezone, and UTC

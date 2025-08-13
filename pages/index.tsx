@@ -61,7 +61,7 @@ export default function Home() {
       const now = new Date()
       const unixTimestamp = Math.floor(now.getTime() / 1000)
       setCurrentTime(
-        `Current Unix timestamp: ${unixTimestamp} (${format(now, 'PPpp')})`
+        `Current timestamp: ${unixTimestamp} (${format(now, 'PPpp')})`
       )
     }
 
@@ -122,14 +122,14 @@ export default function Home() {
     setResults([])
 
     if (!timestamp.trim()) {
-      setError('Please enter a Unix timestamp')
+      setError('Please enter a timestamp')
       return
     }
 
     const numericTimestamp = parseInt(timestamp.trim())
 
     if (isNaN(numericTimestamp)) {
-      setError('Please enter a valid numeric Unix timestamp')
+      setError('Please enter a valid numeric timestamp')
       return
     }
 
@@ -225,10 +225,9 @@ export default function Home() {
     setTimestamp(now.toString())
   }
 
-  const pageTitle =
-    'Unix Timestamp Converter | Convert Timestamps to Readable Dates'
+  const pageTitle = 'Timestamp Converter | Convert Timestamps to Readable Dates'
   const pageDescription =
-    'Free online tool to convert Unix timestamps to human-readable dates and times. Supports multiple timezones and provides instant results.'
+    'Free online tool to convert timestamps to human-readable dates and times. Supports multiple timezones and provides instant results.'
   const canonicalUrl = 'https://yourdomain.com'
 
   return (
@@ -244,7 +243,7 @@ export default function Home() {
         <meta property='og:url' content={canonicalUrl} />
         <meta property='og:title' content={pageTitle} />
         <meta property='og:description' content={pageDescription} />
-        <meta property='og:site_name' content='Unix Timestamp Converter' />
+        <meta property='og:site_name' content='Timestamp Converter' />
 
         {/* Twitter */}
         <meta name='twitter:card' content='summary_large_image' />
@@ -258,7 +257,7 @@ export default function Home() {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebApplication',
-              name: 'Unix Timestamp Converter',
+              name: 'Timestamp Converter',
               description: pageDescription,
               applicationCategory: 'Utility',
               operatingSystem: 'Web',
@@ -275,10 +274,10 @@ export default function Home() {
       <main className='container'>
         <div className='card'>
           <header>
-            <h1 className='title'>Unix Timestamp Converter</h1>
+            <h1 className='title'>Timestamp Converter</h1>
             <p className='subtitle'>
-              Convert Unix timestamps (epoch time) to human-readable dates in
-              any timezone
+              Convert timestamps (epoch time) to human-readable dates in any
+              timezone
             </p>
           </header>
 
@@ -287,7 +286,7 @@ export default function Home() {
             className='input-group'
           >
             <label className='label' htmlFor='timestamp'>
-              Unix Timestamp (seconds or milliseconds)
+              Timestamp (seconds or milliseconds)
             </label>
             <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
               <input
