@@ -284,7 +284,6 @@ export default function Home() {
       <main className='container'>
         <div className='card'>
           <header>
-            <h1 className='title'>Timestamp Converter</h1>
             <p className='subtitle'>
               Convert timestamps (epoch time) to human-readable dates in any
               timezone
