@@ -8,6 +8,38 @@ import ConversionHistoryComponent, {
   ConversionHistory,
 } from '../components/ConversionHistory'
 
+const Card = styled.div`
+  background: var(--color-card-background);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  max-width: 100%;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    margin: 0 auto 2rem;
+  }
+`
+
+const CardNarrow = styled(Card)`
+  @media (min-width: 768px) {
+    max-width: 400px;
+  }
+`
+
+const CurrentTimeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+`
+
 interface ConversionResult {
   timezone: string
   formatted: string
@@ -40,17 +72,6 @@ interface TimezoneSelectProps {
   onChange: (value: string) => void
   className?: string
 }
-
-const CurrentTimeContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    gap: 0.5rem;
-  }
-`
 
 export default function Home() {
   const [timestamp, setTimestamp] = useState('')
@@ -282,7 +303,7 @@ export default function Home() {
       </Head>
 
       <main className='container'>
-        <div className='card'>
+        <CardNarrow>
           <header>
             <p className='subtitle'>
               Convert timestamps (epoch time) to human-readable dates in any
@@ -393,8 +414,8 @@ export default function Home() {
               ))}
             </div>
           )}
-        </div>
-        <div className='card conversion-history'>
+        </CardNarrow>
+        <Card className='conversion-history'>
           <section aria-label='Conversion History'>
             <ConversionHistoryComponent
               history={conversionHistory}
@@ -402,7 +423,7 @@ export default function Home() {
               onSelectTimestamp={setTimestamp}
             />
           </section>
-        </div>
+        </Card>
       </main>
     </>
   )
