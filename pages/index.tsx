@@ -294,11 +294,25 @@ export default function Home() {
             aria-label='Timestamp Conversion Form'
             className='input-group'
           >
-            <label className='label' htmlFor='timestamp'>
+            <label
+              className='label'
+              htmlFor='timestamp'
+              style={{ marginBottom: '0.5rem' }}
+            >
               Timestamp (seconds or milliseconds)
             </label>
             <CurrentTimeContainer>
-              <div className='current-time' style={{ flex: 1 }}>
+              <div
+                style={{
+                  flex: 1,
+                  margin: '0 0 1rem 0',
+                  padding: '0.5rem 1rem',
+                  background: 'rgb(102, 126, 234)',
+                  borderRadius: '10px',
+                  fontSize: '0.9rem',
+                  color: 'rgba(255, 255, 255, 0.95)',
+                }}
+              >
                 <div>{`Current timestamp: ${currentTime}`}</div>
                 <div>{`${format(new Date(currentTime * 1000), 'PPpp')}`}</div>
               </div>
@@ -307,7 +321,7 @@ export default function Home() {
                 onClick={fillCurrentTimestamp}
                 style={{
                   flex: 0.25,
-                  margin: '1rem 0',
+                  margin: '0 0 1rem 0',
                   padding: '0.5rem 1rem',
                   background: 'transparent',
                   border: '1px solid #667eea',

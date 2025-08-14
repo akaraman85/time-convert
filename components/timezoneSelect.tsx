@@ -6,6 +6,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -15,33 +16,44 @@ const Container = styled.div`
 
 const StyledSelect = styled.select`
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.375rem;
-  background-color: white;
-  color: #1a202c;
+  padding: 0.75rem;
+  border: 1px solid var(--color-input-border, #e2e8f0);
+  border-radius: 0.5rem;
+  background-color: var(--color-input-background, white);
+  color: var(--color-primary-text, #1a202c);
   font-size: 1rem;
   line-height: 1.5;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+    border-color: var(--color-input-focus, #667eea);
+    box-shadow: var(--shadow-input, 0 0 0 2px rgba(102, 126, 234, 0.2));
   }
 
   &:disabled {
-    background-color: #f7fafc;
+    background-color: var(--color-input-disabled, #f7fafc);
     cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  & option {
+    background-color: var(--color-input-background, white);
+    color: var(--color-primary-text, #1a202c);
   }
 `
 
 const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
-  font-size: 0.875rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--color-primary-text, #4a5568);
 `
 
 interface TimezoneGroup {

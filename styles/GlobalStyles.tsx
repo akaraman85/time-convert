@@ -76,10 +76,6 @@ const globalStyles = css({
       padding: '1rem',
     },
   },
-  '.conversion-history': {
-    width: '100%',
-    maxWidth: 'unset',
-  },
   '.title': {
     fontSize: '2rem',
     fontWeight: 700,
@@ -170,14 +166,6 @@ const globalStyles = css({
     fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', monospace",
     color: '#555',
     fontSize: '0.95rem',
-  },
-  '.current-time': {
-    margin: '1rem 0',
-    padding: '0.5rem 1rem',
-    background: 'rgb(102, 126, 234)',
-    borderRadius: '10px',
-    fontSize: '0.9rem',
-    color: 'rgba(255, 255, 255, 0.95)',
   },
 })
 

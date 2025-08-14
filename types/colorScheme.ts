@@ -177,4 +177,36 @@ export const presetColorSchemes: ColorScheme[] = [
       input: '0 0 0 3px rgba(72, 187, 120, 0.1)',
     },
   },
+  {
+    id: 'dark',
+    name: 'Dark Mode',
+    colors: {
+      pageBackground: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)',
+      cardBackground: 'rgba(30, 30, 50, 0.95)',
+
+      primaryText: '#e2e8f0',
+      secondaryText: '#a0aec0',
+      titleGradient: 'linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%)',
+
+      buttonBackground: 'linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%)',
+      buttonText: '#ffffff',
+      buttonHover: 'linear-gradient(135deg, #6d28d9 0%, #2563eb 100%)',
+
+      inputBorder: '#4a5568',
+      inputFocus: '#7c3aed',
+      inputBackground: '#2d3748',
+
+      primary: '#7c3aed',
+      secondary: '#3b82f6',
+
+      success: '#10b981',
+      warning: '#f59e0b',
+      error: '#ef4444',
+    },
+    shadows: {
+      card: '0 20px 40px rgba(0, 0, 0, 0.4)',
+      button: '0 4px 15px rgba(124, 58, 237, 0.4)',
+      input: '0 0 0 3px rgba(124, 58, 237, 0.1)',
+    },
+  },
 ]
