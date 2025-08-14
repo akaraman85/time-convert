@@ -24,6 +24,12 @@ const Container = styled.main`
   }
 `
 
+const Title = styled.h3`
+  margin: 0;
+  color: var(--color-primary-text, #4a5568);
+  font-size: 1.1rem;
+`
+
 const Card = styled.div`
   background: var(--color-card-background);
   border-radius: 12px;
@@ -78,6 +84,30 @@ const CurrentTimeDisplay = styled.div`
   line-height: 1.4;
 `
 
+const ConvertButton = styled.button`
+  width: 100%;
+  padding: 1rem 2rem;
+  background: var(--color-button-background);
+  color: var(--color-button-text);
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-button);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-2px);
+    background: var(--color-button-hover);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+`
+
 const UseButton = styled.button`
   flex: 0.25;
   padding: 0.75rem 1rem;
@@ -129,6 +159,49 @@ const TimestampInput = styled.input`
     color: var(--color-secondary-text);
     opacity: 0.7;
   }
+`
+
+const ResultsContainer = styled.div`
+  background: var(--color-card-background);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card);
+  margin-top: 1rem;
+  overflow: hidden;
+`
+
+const ResultItem = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-input-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+`
+
+const ResultLabel = styled.div`
+  font-weight: 600;
+  color: var(--color-primary-text);
+  margin-bottom: 0.25rem;
+`
+
+const ResultValue = styled.div`
+  color: var(--color-primary-text);
+  margin-bottom: 0.25rem;
+`
+
+const ResultMeta = styled.div`
+  font-size: 0.85rem;
+  color: var(--color-secondary-text);
+  opacity: 0.9;
+  margin-top: 0.25rem;
+`
+
+const ErrorMessage = styled(ResultItem)`
+  background-color: rgba(245, 101, 101, 0.1);
+  color: var(--color-error);
+  border-left: 3px solid var(--color-error);
+  margin: 0.5rem 0;
+  border-radius: 4px;
 `
 
 interface ConversionResult {
@@ -395,12 +468,7 @@ export default function Home() {
 
       <Container>
         <CardNarrow>
-          <header>
-            <p className='subtitle'>
-              Convert timestamps (epoch time) to human-readable dates in any
-              timezone
-            </p>
-          </header>
+          <Title>Convert timestamps</Title>
 
           <FormSection aria-label='Timestamp Conversion Form'>
             <FormLabel htmlFor='timestamp'>
@@ -435,40 +503,32 @@ export default function Home() {
             />
           </section>
 
-          <section aria-label='Actions' className='actions'>
-            <button className='button' onClick={convertTimestamp}>
-              Convert Timestamp
-            </button>
-          </section>
+          <ConvertButton
+            onClick={convertTimestamp}
+            aria-label='Convert Timestamp'
+          >
+            Convert Timestamp
+          </ConvertButton>
 
           {error && (
-            <div className='results'>
-              <div className='result-item error'>
-                <div className='result-label'>Error</div>
-                <div className='result-value'>{error}</div>
-              </div>
-            </div>
+            <ErrorMessage>
+              <ResultLabel>Error</ResultLabel>
+              <ResultValue>{error}</ResultValue>
+            </ErrorMessage>
           )}
 
           {results.length > 0 && (
-            <div className='results'>
+            <ResultsContainer>
               {results.map((result, index) => (
-                <div key={index} className='result-item'>
-                  <div className='result-label'>{result.timezone}</div>
-                  <div className='result-value'>{result.formatted}</div>
-                  <div
-                    className='result-value'
-                    style={{
-                      fontSize: '0.85rem',
-                      opacity: 0.7,
-                      marginTop: '0.25rem',
-                    }}
-                  >
+                <ResultItem key={index}>
+                  <ResultLabel>{result.timezone}</ResultLabel>
+                  <ResultValue>{result.formatted}</ResultValue>
+                  <ResultMeta>
                     {result.relative} • ISO: {result.iso}
-                  </div>
-                </div>
+                  </ResultMeta>
+                </ResultItem>
               ))}
-            </div>
+            </ResultsContainer>
           )}
         </CardNarrow>
         <Card className='conversion-history'>

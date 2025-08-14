@@ -49,33 +49,6 @@ const globalStyles = css({
       display: 'block !important',
     },
   },
-  '.card': {
-    background: 'var(--color-card-background)',
-    backdropFilter: 'blur(10px)',
-    borderRadius: '20px',
-    padding: '2rem',
-    boxShadow: 'var(--shadow-card)',
-    width: '100%',
-    maxWidth: '600px',
-    '@media (max-width: 768px)': {
-      padding: '1rem',
-    },
-  },
-  '.title': {
-    fontSize: '2rem',
-    fontWeight: 700,
-    textAlign: 'left',
-    marginBottom: '0.5rem',
-    background: 'var(--color-title-gradient)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
-  },
-  '.subtitle': {
-    textAlign: 'left',
-    color: 'var(--color-secondary-text)',
-    fontSize: '0.9rem',
-  },
   '.input-group': {
     marginBottom: '1.5rem',
   },
@@ -102,54 +75,6 @@ const globalStyles = css({
   '.select': {
     background: 'var(--color-input-background)',
     cursor: 'pointer',
-  },
-  '.button': {
-    width: '100%',
-    padding: '1rem 2rem',
-    background: 'var(--color-button-background)',
-    color: 'var(--color-button-text)',
-    border: 'none',
-    borderRadius: '10px',
-    fontSize: '1.1rem',
-    fontWeight: 600,
-    boxShadow: 'var(--shadow-button)',
-    cursor: 'pointer',
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-    marginBottom: '1.5rem',
-    '&:hover': {
-      transform: 'translateY(-2px)',
-      background: 'var(--color-button-hover)',
-      boxShadow: '0 10px 20px rgba(102, 126, 234, 0.3)',
-    },
-    '&:active': {
-      transform: 'translateY(0)',
-    },
-  },
-  '.results': {
-    background: '#f8f9fa',
-    borderRadius: '10px',
-  },
-  '.result-item': {
-    marginBottom: '1rem',
-    padding: '1rem',
-    background: 'white',
-    borderRadius: '8px',
-    borderLeft: '4px solid #667eea',
-    '&.error': {
-      background: '#fee',
-      borderLeftColor: '#e74c3c',
-      color: '#c0392b',
-    },
-  },
-  '.result-label': {
-    fontWeight: 600,
-    color: '#333',
-    marginBottom: '0.25rem',
-  },
-  '.result-value': {
-    fontFamily: "'Monaco', 'Menlo', 'Ubuntu Mono', monospace",
-    color: '#555',
-    fontSize: '0.95rem',
   },
 })
 
