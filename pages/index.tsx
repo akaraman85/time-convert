@@ -8,24 +8,38 @@ import ConversionHistoryComponent, {
   ConversionHistory,
 } from '../components/ConversionHistory'
 
+const Container = styled.main`
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+  @media (max-width: 768px) {
+    padding: 1rem;
+    paddingtop: 4rem;
+  }
+`
+
 const Card = styled.div`
   background: var(--color-card-background);
   border-radius: 12px;
   box-shadow: var(--shadow-card);
   padding: 2rem;
-  margin-bottom: 2rem;
   transition: all 0.3s ease;
   max-width: 100%;
   width: 100%;
-
-  @media (min-width: 768px) {
-    margin: 0 auto 2rem;
-  }
 `
 
 const CardNarrow = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   @media (min-width: 768px) {
-    max-width: 400px;
+    max-width: 420px;
   }
 `
 
@@ -37,6 +51,83 @@ const CurrentTimeContainer = styled.div`
   @media (min-width: 768px) {
     flex-direction: row;
     gap: 0.5rem;
+  }
+`
+
+const FormSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+`
+
+const FormLabel = styled.label`
+  color: var(--color-primary-text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: block;
+`
+
+const CurrentTimeDisplay = styled.div`
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: var(--color-primary);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--color-button-text);
+  line-height: 1.4;
+`
+
+const UseButton = styled.button`
+  flex: 0.25;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: 100%;
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  @media (min-width: 768px) {
+    width: auto;
+  }
+`
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+`
+
+const TimestampInput = styled.input`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-input-border);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-primary-text);
+  background: var(--color-input-background);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-input-focus);
+    box-shadow: var(--shadow-input);
+  }
+
+  &::placeholder {
+    color: var(--color-secondary-text);
+    opacity: 0.7;
   }
 `
 
@@ -302,7 +393,7 @@ export default function Home() {
         />
       </Head>
 
-      <main className='container'>
+      <Container>
         <CardNarrow>
           <header>
             <p className='subtitle'>
@@ -311,68 +402,32 @@ export default function Home() {
             </p>
           </header>
 
-          <section
-            aria-label='Timestamp Conversion Form'
-            className='input-group'
-          >
-            <label
-              className='label'
-              htmlFor='timestamp'
-              style={{ marginBottom: '0.5rem' }}
-            >
+          <FormSection aria-label='Timestamp Conversion Form'>
+            <FormLabel htmlFor='timestamp'>
               Timestamp (seconds or milliseconds)
-            </label>
+            </FormLabel>
             <CurrentTimeContainer>
-              <div
-                style={{
-                  flex: 1,
-                  margin: '0 0 1rem 0',
-                  padding: '0.5rem 1rem',
-                  background: 'rgb(102, 126, 234)',
-                  borderRadius: '10px',
-                  fontSize: '0.9rem',
-                  color: 'rgba(255, 255, 255, 0.95)',
-                }}
-              >
+              <CurrentTimeDisplay>
                 <div>{`Current timestamp: ${currentTime}`}</div>
                 <div>{`${format(new Date(currentTime * 1000), 'PPpp')}`}</div>
-              </div>
-              <button
-                type='button'
-                onClick={fillCurrentTimestamp}
-                style={{
-                  flex: 0.25,
-                  margin: '0 0 1rem 0',
-                  padding: '0.5rem 1rem',
-                  background: 'transparent',
-                  border: '1px solid #667eea',
-                  borderRadius: '5px',
-                  color: '#667eea',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  width: '100%',
-                }}
-              >
+              </CurrentTimeDisplay>
+              <UseButton type='button' onClick={fillCurrentTimestamp}>
                 Use
-              </button>
+              </UseButton>
             </CurrentTimeContainer>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
-              <input
+            <InputContainer>
+              <TimestampInput
                 id='timestamp'
                 type='text'
-                className='input'
                 value={timestamp}
                 onChange={e => setTimestamp(e.target.value)}
                 placeholder='e.g., 1691798642 or 1691798642000'
                 onKeyPress={e => e.key === 'Enter' && convertTimestamp()}
               />
-            </div>
-          </section>
+            </InputContainer>
+          </FormSection>
 
-          <section
-            aria-label='Timezone Selection'
-            style={{ marginBottom: '1rem' }}
-          >
+          <section aria-label='Timezone Selection'>
             <TimezoneSelect
               id='timezone'
               value={selectedTimezone}
@@ -385,6 +440,7 @@ export default function Home() {
               Convert Timestamp
             </button>
           </section>
+
           {error && (
             <div className='results'>
               <div className='result-item error'>
@@ -424,7 +480,7 @@ export default function Home() {
             />
           </section>
         </Card>
-      </main>
+      </Container>
     </>
   )
 }

@@ -44,21 +44,6 @@ const globalStyles = css({
     color: 'inherit',
     textDecoration: 'none',
   },
-  '.container': {
-    margin: '0 auto',
-    padding: '2rem',
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2rem',
-    '@media (min-width: 768px)': {
-      flexDirection: 'row',
-    },
-    '@media (max-width: 768px)': {
-      padding: '1rem',
-      paddingTop: '4rem', // Space for mobile menu button
-    },
-  },
   '.mobile-menu-toggle': {
     '@media (max-width: 768px)': {
       display: 'block !important',
@@ -89,7 +74,6 @@ const globalStyles = css({
   '.subtitle': {
     textAlign: 'left',
     color: 'var(--color-secondary-text)',
-    marginBottom: '2rem',
     fontSize: '0.9rem',
   },
   '.input-group': {
