@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { format, fromUnixTime } from 'date-fns'
 import { utcToZonedTime, format as formatTz } from 'date-fns-tz'
 import styled from '@emotion/styled'
+import { TimestampForm } from '../components/forms/TimestampForm'
 import ConversionHistoryComponent, {
   ConversionHistory,
 } from '../components/ConversionHistory'
@@ -60,20 +61,6 @@ const CurrentTimeContainer = styled.div`
   }
 `
 
-const FormSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-`
-
-const FormLabel = styled.label`
-  color: var(--color-primary-text);
-  font-size: 0.9rem;
-  font-weight: 500;
-  display: block;
-`
-
 const CurrentTimeDisplay = styled.div`
   flex: 1;
   padding: 0.75rem 1rem;
@@ -82,83 +69,6 @@ const CurrentTimeDisplay = styled.div`
   font-size: 0.9rem;
   color: var(--color-button-text);
   line-height: 1.4;
-`
-
-const ConvertButton = styled.button`
-  width: 100%;
-  padding: 1rem 2rem;
-  background: var(--color-button-background);
-  color: var(--color-button-text);
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  box-shadow: var(--shadow-button);
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-  &:hover {
-    transform: translateY(-2px);
-    background: var(--color-button-hover);
-    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-  }
-  &:active {
-    transform: translateY(0);
-  }
-`
-
-const UseButton = styled.button`
-  flex: 0.25;
-  padding: 0.75rem 1rem;
-  background: transparent;
-  border: 1px solid var(--color-primary);
-  border-radius: 6px;
-  color: var(--color-primary);
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  width: 100%;
-
-  &:hover {
-    background: rgba(102, 126, 234, 0.1);
-  }
-
-  @media (min-width: 768px) {
-    width: auto;
-  }
-`
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-`
-
-const TimestampInput = styled.input`
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--color-input-border);
-  border-radius: 6px;
-  font-size: 1rem;
-  color: var(--color-primary-text);
-  background: var(--color-input-background);
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-input-focus);
-    box-shadow: var(--shadow-input);
-  }
-
-  &::placeholder {
-    color: var(--color-secondary-text);
-    opacity: 0.7;
-  }
 `
 
 const ResultsContainer = styled.div`
@@ -216,25 +126,6 @@ export async function getStaticProps() {
   return {
     props: {},
   }
-}
-
-const TimezoneSelect = dynamic<TimezoneSelectProps>(
-  () => import('../components/timezoneSelect').then(mod => mod.default),
-  {
-    ssr: false,
-    loading: () => (
-      <select className='select select-bordered w-full'>
-        <option>Loading timezones...</option>
-      </select>
-    ),
-  }
-)
-
-interface TimezoneSelectProps {
-  id?: string
-  value: string
-  onChange: (value: string) => void
-  className?: string
 }
 
 export default function Home() {
@@ -470,45 +361,32 @@ export default function Home() {
         <CardNarrow>
           <Title>Convert timestamps</Title>
 
-          <FormSection aria-label='Timestamp Conversion Form'>
-            <FormLabel htmlFor='timestamp'>
-              Timestamp (seconds or milliseconds)
-            </FormLabel>
-            <CurrentTimeContainer>
-              <CurrentTimeDisplay>
-                <div>{`Current timestamp: ${currentTime}`}</div>
-                <div>{`${format(new Date(currentTime * 1000), 'PPpp')}`}</div>
-              </CurrentTimeDisplay>
-              <UseButton type='button' onClick={fillCurrentTimestamp}>
-                Use
-              </UseButton>
-            </CurrentTimeContainer>
-            <InputContainer>
-              <TimestampInput
-                id='timestamp'
-                type='text'
-                value={timestamp}
-                onChange={e => setTimestamp(e.target.value)}
-                placeholder='e.g., 1691798642 or 1691798642000'
-                onKeyPress={e => e.key === 'Enter' && convertTimestamp()}
-              />
-            </InputContainer>
-          </FormSection>
-
-          <section aria-label='Timezone Selection'>
-            <TimezoneSelect
-              id='timezone'
-              value={selectedTimezone}
-              onChange={setSelectedTimezone}
-            />
-          </section>
-
-          <ConvertButton
-            onClick={convertTimestamp}
-            aria-label='Convert Timestamp'
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem',
+              width: '100%',
+            }}
           >
-            Convert Timestamp
-          </ConvertButton>
+            <TimestampForm
+              label='Timestamp (seconds or milliseconds)'
+              id='timestamp'
+              type='text'
+              value={timestamp}
+              onChange={setTimestamp}
+              placeholder='e.g., 1691798642 or 1691798642000'
+              showCurrentTime={true}
+              currentTimestamp={currentTime}
+              onUseCurrentTime={fillCurrentTimestamp}
+              showTimezoneSelect={true}
+              timezone={selectedTimezone}
+              onTimezoneChange={setSelectedTimezone}
+              showConvertButton={true}
+              onConvert={convertTimestamp}
+              convertButtonLabel='Convert Timestamp'
+            />
+          </div>
 
           {error && (
             <ErrorMessage>

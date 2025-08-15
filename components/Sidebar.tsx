@@ -1,4 +1,5 @@
 import React, { useState, lazy, Suspense } from 'react'
+import { useRouter } from 'next/router'
 import styled from '@emotion/styled'
 
 // Lazy load the ColorSchemeEditor component
@@ -82,15 +83,60 @@ const SidebarMenu = styled.div`
   overflow-y: auto;
 `
 
-const MenuItem = styled.button<{ isCollapsed: boolean }>`
+interface MenuItemProps {
+  isCollapsed: boolean
+}
+
+const MenuItem = styled.button<MenuItemProps>`
   width: 100%;
   display: flex;
   align-items: center;
+  position: relative;
+  transition: background-color 0.2s ease;
   gap: 1rem;
   padding: 0.75rem 1rem;
   border: none;
   background: none;
   color: var(--color-primary-text);
+  cursor: pointer;
+  text-align: left;
+  border-radius: 0 25px 25px 0;
+  margin-right: 1rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 0;
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-radius: 0 2px 2px 0;
+    transition:
+      height 0.2s ease,
+      opacity 0.2s ease;
+    opacity: 0;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.backgroundHover};
+  }
+
+  &.active {
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.backgroundHover};
+
+    &::before {
+      height: 60%;
+      opacity: 1;
+    }
+
+    svg {
+      color: ${({ theme }) => theme.colors.primary};
+    }
+  }
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -217,9 +263,34 @@ const ClockIcon: React.FC = () => (
   </svg>
 )
 
+// Table icon component
+const TableIcon: React.FC = () => (
+  <svg
+    width='20'
+    height='20'
+    viewBox='0 0 24 24'
+    fill='none'
+    stroke='currentColor'
+    strokeWidth='2'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+  >
+    <rect x='3' y='3' width='18' height='18' rx='2' ry='2'></rect>
+    <line x1='3' y1='9' x2='21' y2='9'></line>
+    <line x1='3' y1='15' x2='21' y2='15'></line>
+    <line x1='12' y1='3' x2='12' y2='21'></line>
+  </svg>
+)
+
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   const [isColorEditorOpen, setIsColorEditorOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const router = useRouter()
+
+  const navigateTo = (path: string) => {
+    router.push(path)
+    setIsMobileMenuOpen(false)
+  }
 
   const handleColorSchemeClick = () => {
     setIsColorEditorOpen(true)
@@ -271,11 +342,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         </SidebarHeader>
 
         <SidebarMenu>
-          <MenuItem isCollapsed={isCollapsed} onClick={() => {}}>
+          <MenuItem
+            isCollapsed={isCollapsed}
+            onClick={() => navigateTo('/')}
+            className={router.pathname === '/' ? 'active' : ''}
+          >
             <MenuIcon>
               <ClockIcon />
             </MenuIcon>
             <MenuText isCollapsed={isCollapsed}>Time Converter</MenuText>
+          </MenuItem>
+
+          <MenuItem
+            isCollapsed={isCollapsed}
+            onClick={() => navigateTo('/timetable')}
+            className={router.pathname === '/timetable' ? 'active' : ''}
+          >
+            <MenuIcon>
+              <TableIcon />
+            </MenuIcon>
+            <MenuText isCollapsed={isCollapsed}>Time Table</MenuText>
           </MenuItem>
 
           <MenuItem isCollapsed={isCollapsed} onClick={handleColorSchemeClick}>

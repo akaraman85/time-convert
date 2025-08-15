@@ -1,4 +1,8 @@
 export const theme = {
+  colors: {
+    primary: 'var(--color-primary, #667eea)',
+    backgroundHover: 'var(--color-hover-bg, rgba(0, 0, 0, 0.03))',
+  },
   fonts: {
     body: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     heading: 'inherit',
